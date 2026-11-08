@@ -46,8 +46,9 @@ nav .links a[aria-current="true"]{color:#070914;font-weight:700;background:var(-
 h1{font-size:clamp(44px,9vw,104px);line-height:1;font-weight:800;letter-spacing:.01em;margin:18px 0 22px;
   color:var(--text);text-transform:uppercase}
 .lede{max-width:640px;margin:0 auto;font-size:clamp(17px,2.2vw,21px);color:var(--soft)}
-.chips{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:26px 0 34px}
-.chips span{font-family:var(--mono);font-size:13px;color:var(--ice);padding:6px 14px;border:1px solid rgba(129,140,248,.32);border-radius:999px;background:var(--panel)}
+.chips{display:flex;flex-wrap:wrap;gap:6px 0;justify-content:center;margin:24px 0 34px;font-family:var(--mono);font-size:14px;color:var(--ice);letter-spacing:.02em}
+.chips span::after{content:"\00b7";margin:0 14px;color:var(--indigo)}
+.chips span:last-child::after{content:none}
 .btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
 .btn{display:inline-block;padding:14px 32px;border-radius:999px;font-weight:700;text-decoration:none;font-size:16px;transition:.2s}
 .btn.primary{background:var(--grad);color:#070914;box-shadow:none}
