@@ -10,8 +10,8 @@ Collect the user's agent setup into their second-brain repo safely. Never publis
 ## Steps
 
 1. Confirm the current repo has `scripts/gather.sh`. If not, tell the user to start from the template.
-2. Run `scripts/gather.sh` (pass the user's code folder if it is not `~/code`).
-3. Read `git diff --stat`, then read every new or changed memory, settings and instruction file. Flag, do not silently keep:
+2. Ask whether the repo is a private backup or a public copy. Run `scripts/gather.sh --dry-run --mode <mode>` first (add `--code DIR` if their repos are not in `~/code`) and show the user the plan and flagged files. Run it for real once they agree.
+3. If `REVIEW.md` exists, those items were skipped as flagged: help the user clean the source, then gather again. Read `git diff --stat`, then read every new or changed memory, settings and instruction file. Flag, do not silently keep:
    - Organization, client or colleague names and project state
    - Emails, IP addresses, account or tenant IDs, absolute home paths, internal URLs
    - Personal notes (interviews, finances, health, family)

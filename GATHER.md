@@ -12,7 +12,7 @@
 | Per-repo instructions | `CLAUDE.md`, `AGENTS.md`, `GEMINI.md` in each repo | `project-instructions/` | Only for repos you own |
 | Dotfiles | shell, git and editor config | `dotfiles/` | No (emails, keys, paths) |
 
-Other agents keep the same kinds of things in their own folders: see the table in `RESTORE-OTHER-AGENTS.md` and copy from those locations.
+`gather.sh` also detects Codex, Gemini CLI, Windsurf, Aider, Kiro, opencode and Amp, and collects their global instructions into `agents/<tool>/`. It finds per-repo files for every agent (`AGENTS.md`, `GEMINI.md`, `CONVENTIONS.md`, `.cursor/rules`, `.windsurf/rules`, `.kiro/steering`, Copilot instructions) and keeps their relative paths under `project-instructions/`.
 
 ## Never collect
 
@@ -20,11 +20,12 @@ Credentials and tokens, SSH and cloud-CLI config folders, `.env` files, conversa
 
 ## The loop
 
-1. **Gather**: `scripts/gather.sh [code-dir]` copies the assets above into this repo and swaps your username out of folder names and settings paths.
-2. **Trim**: read `git diff`. Delete memory about organizations, clients and other people. Keep working-style notes and lessons learned.
-3. **Check**: `scripts/check-denylist.sh` and `gitleaks detect` must pass. Put private terms in the `EXTRA_DENYLIST` secret.
-4. **Flatten**: `python3 scripts/build-portable-context.py` produces the single file other agents can read.
-5. **Commit** to a private repo. Gather again whenever your memory has grown.
+1. **Preview**: `scripts/gather.sh --dry-run` lists every file it would copy, which agents it detected, and which files are flagged (emails, IPs, home paths, your private terms). Nothing is copied.
+2. **Gather**: run `scripts/gather.sh`. It asks whether this is a *private* backup or a *public* copy. Private copies everything it finds. Public keeps only skills, skips any flagged one, and lists them in `REVIEW.md`. Your username is swapped out of folder names and settings paths.
+3. **Trim**: read `git diff`. Delete memory about organizations, clients and other people. Keep working-style notes and lessons learned.
+4. **Check**: `scripts/check-denylist.sh` and `gitleaks detect` must pass. Put private terms in the `EXTRA_DENYLIST` secret.
+5. **Flatten**: `python3 scripts/build-portable-context.py` produces the single file other agents can read.
+6. **Commit** to a private repo. Gather again whenever your memory has grown.
 
 Use two repos if you also want to publish a template: a private one with everything, and a public one fed from an explicit allowlist, never the reverse.
 

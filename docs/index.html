@@ -171,7 +171,7 @@ footer a{color:var(--ice)}
 
   <section class="wrap reveal" id="gather" aria-labelledby="h-3">
     <h2 id="h-3">Gather your <em>brain</em></h2>
-    <p class="sub">Before you can restore anything, collect it. Run <code>scripts/gather.sh</code> and it copies everything below into your repo.</p>
+    <p class="sub">Before you can restore anything, collect it. Run <code>scripts/gather.sh</code> and it finds what is below for Claude Code, Codex, Gemini CLI, Windsurf, Aider, Kiro, opencode and Amp, then copies it into your repo.</p>
     <div class="rows" role="table" aria-label="What to collect, where it lives, and whether to share it">
       <div class="row head" role="row"><div role="columnheader">Asset</div><div role="columnheader">Where it lives</div><div role="columnheader">Share publicly?</div></div>
       <div class="row" role="row"><b role="cell">Skills</b><span role="cell"><code>~/.claude/skills/*</code></span><span role="cell">Only ones you wrote and reviewed</span></div>
@@ -183,7 +183,7 @@ footer a{color:var(--ice)}
     <div class="never"><b>Never collect:</b> credentials and tokens, SSH and cloud-CLI config folders, <code>.env</code> files, conversation transcripts and caches. Sign in again on the new machine.</div>
     <h3 style="margin:34px 0 14px;font-size:20px">The loop</h3>
     <div class="steps">
-      <div class="step"><div><h3>Gather</h3><p><code>scripts/gather.sh [code-dir]</code> copies skills, memory, settings and repo instructions, and swaps your username out of paths.</p></div></div>
+      <div class="step"><div><h3>Preview &amp; gather</h3><p>Run <code>scripts/gather.sh --dry-run</code> first to preview every file and flag emails, IPs and home paths. Then run it for real: pick <em>private</em> to copy everything, or <em>public</em> to keep only clean skills.</p></div></div>
       <div class="step"><div><h3>Trim</h3><p>Read the diff. Delete memory about organizations, clients and other people. Keep working-style notes and lessons learned.</p></div></div>
       <div class="step"><div><h3>Check</h3><p><code>scripts/check-denylist.sh</code> and <code>gitleaks detect</code> must pass. Put private terms in the <code>EXTRA_DENYLIST</code> secret.</p></div></div>
       <div class="step"><div><h3>Flatten</h3><p><code>python3 scripts/build-portable-context.py</code> produces the single file other agents can read.</p></div></div>
@@ -237,7 +237,8 @@ footer a{color:var(--ice)}
 <span class="p">$</span> git clone https://github.com/mariotristan/tristan-second-brain-public my-second-brain
 <span class="p">$</span> cd my-second-brain
 
-<span class="c"># 2. gather your skills, memory and settings</span>
+<span class="c"># 2. preview, then gather your skills, memory and settings</span>
+<span class="p">$</span> scripts/gather.sh --dry-run
 <span class="p">$</span> scripts/gather.sh
 
 <span class="c"># 3. flatten memory for any agent</span>
