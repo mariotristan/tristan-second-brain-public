@@ -103,16 +103,11 @@ a:focus-visible,button:focus-visible,pre:focus-visible{outline:3px solid var(--i
 .skip:focus{top:16px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 @media (forced-colors:active){h1,h2 em,.btn.primary{background:none;color:CanvasText;-webkit-text-fill-color:currentColor;forced-color-adjust:auto}.btn,.card,.node,.step,.row,.term{border:1px solid CanvasText}}
-.why-top{display:grid;grid-template-columns:1.15fr .85fr;gap:40px;align-items:center;margin-bottom:34px}
-.why-top .lead{font-size:clamp(20px,2.5vw,26px);line-height:1.6;color:var(--text);font-weight:400}
-.why-top .lead h2{margin-bottom:22px}
-.why-top .lead p+p{margin-top:16px}
-.why-top .lead strong{color:var(--ice);font-weight:700}
-.brain-wrap{position:relative;aspect-ratio:1/1;max-width:440px;width:100%;margin:0 auto;border-radius:36px;border:1px solid rgba(129,140,248,.32);background:radial-gradient(circle at 50% 50%,#14183a 0%,var(--panel) 70%);overflow:hidden}
-#brain{position:absolute;inset:0;width:100%;height:100%}
-.brain-tag{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);font-family:var(--mono);font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--ice);background:rgba(7,9,20,.8);padding:6px 16px;border-radius:999px;border:1px solid rgba(129,140,248,.32);white-space:nowrap}
+#why .lead{max-width:820px;margin-bottom:34px;font-size:clamp(20px,2.5vw,26px);line-height:1.6;color:var(--text)}
+#why .lead h2{margin-bottom:22px}
+#why .lead p+p{margin-top:16px}
+#why .lead strong{color:var(--ice);font-weight:700}
 #why .card{padding:30px}#why .card h3{font-size:22px;margin-bottom:8px}#why .card p{font-size:17px;line-height:1.65;color:var(--soft)}
-@media (max-width:860px){.why-top{grid-template-columns:1fr;gap:28px}}
 .hero{display:grid;grid-template-columns:minmax(260px,400px) 1fr;gap:48px;align-items:center;text-align:left}
 .hero-brain{position:relative;aspect-ratio:1/1;width:100%}
 .hero-brain::before{content:"";position:absolute;inset:-6%;border-radius:50%;background:radial-gradient(circle,rgba(99,102,241,.38) 0%,rgba(99,102,241,0) 68%)}
@@ -159,16 +154,10 @@ footer a{color:var(--ice)}
   </div>
 
   <section class="wrap reveal" id="why" aria-labelledby="h-1">
-    <div class="why-top">
-      <div class="lead">
-        <h2 id="h-1">What is a <em>second brain</em>?</h2>
-        <p>Your AI agents <strong>forget</strong>. Every session starts blank, and every tool keeps its own private memory.</p>
-        <p>A second brain is the one place you keep what makes them work <strong>your way</strong>, as plain files you own.</p>
-      </div>
-      <div class="brain-wrap">
-        <canvas id="brain" role="img" aria-label="Animation of a network shaped like a brain, with signals firing between connected points"></canvas>
-        <div class="brain-tag" aria-hidden="true">Learning</div>
-      </div>
+    <div class="lead">
+      <h2 id="h-1">What is a <em>second brain</em>?</h2>
+      <p>Your AI agents <strong>forget</strong>. Every session starts blank, and every tool keeps its own private memory.</p>
+      <p>A second brain is the one place you keep what makes them work <strong>your way</strong>, as plain files you own.</p>
     </div>
     <div class="grid">
       <div class="card"><h3>Memory</h3><p>Your preferences, corrections and lessons learned: how you like commits written, which mistakes to avoid, what a project already decided.</p></div>
@@ -309,7 +298,6 @@ footer a{color:var(--ice)}
   MIT licensed · <a href="https://github.com/mariotristan/tristan-second-brain-public">tristan-second-brain-public</a>
 </footer>
 
-<script src="brain-data.js"></script>
 <script>
 (function(){
   var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -348,57 +336,90 @@ footer a{color:var(--ice)}
   });
 
 
-  /* Brain animation: the logo's real nodes and connections, with signals cascading through them.
-     neon=true uses the logo's cyan > indigo > fuchsia gradient with real glow (hero only). */
-  function brain(cv,neon){
-    if(!cv||!window.BRAIN)return;
-    var cx=cv.getContext('2d'),N=BRAIN.nodes,E=BRAIN.edges,adj=N.map(function(){return[];}),W=0,H=0,sc=1,glow=N.map(function(){return 0;}),pulses=[],last=0,visible=true,running=false;
+  /* Neon brain: a side-view brain built from glowing nodes and connections, with signals cascading through it. */
+  function buildBrain(){
+    var seed=7;function rnd(){seed|=0;seed=seed+0x6D2B79F5|0;var t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;}
+    function bez(p0,c1,c2,p1,t){var u=1-t;return[u*u*u*p0[0]+3*u*u*t*c1[0]+3*u*t*t*c2[0]+t*t*t*p1[0],u*u*u*p0[1]+3*u*u*t*c1[1]+3*u*t*t*c2[1]+t*t*t*p1[1]];}
+    var segs=[[[-172,-5],[-172,-95],[-95,-150],[0,-152]],[[0,-152],[95,-152],[168,-105],[172,-15]],[[172,-15],[175,25],[150,50],[110,56]],
+      [[110,56],[70,60],[40,62],[18,62]],[[18,62],[10,62],[-10,66],[-18,70]],[[-18,70],[-52,104],[-112,98],[-136,54]],[[-136,54],[-162,36],[-172,18],[-172,-5]]];
+    var cere=[];for(var i=0;i<segs.length;i++)for(var k=0;k<24;k++)cere.push(bez(segs[i][0],segs[i][1],segs[i][2],segs[i][3],k/24));
+    var cb=[];for(var a=0;a<28;a++){var th=a/28*6.2832;cb.push([90+54*Math.cos(th),82+27*Math.sin(th)+Math.sin(th)*4]);}
+    var stem=[[-14,66],[2,66],[20,66],[26,92],[28,120],[26,150],[10,154],[-6,150],[-10,120],[-12,92]];
+    function inside(poly,x,y){var c=false;for(var i=0,j=poly.length-1;i<poly.length;j=i++){var a=poly[i],b=poly[j];if((a[1]>y)!==(b[1]>y)&&x<(b[0]-a[0])*(y-a[1])/(b[1]-a[1])+a[0])c=true;}return c;}
+    function dist(p,q){return Math.hypot(p[0]-q[0],p[1]-q[1]);}
+    function ring(poly,step){var out=[],acc=0;for(var i=0;i<poly.length;i++){var q=poly[(i+1)%poly.length];acc+=dist(poly[i],q);if(!out.length||acc>=step){out.push(poly[i]);acc=0;}}return out;}
+    var N=[],E=[],groups=[];
+    function addRing(poly,step,r){var start=N.length,pts=ring(poly,step);pts.forEach(function(q){N.push([q[0],q[1],r]);});
+      for(var i=0;i<pts.length;i++)E.push([start+i,start+(i+1)%pts.length]);}
+    addRing(cere,15,3.2);addRing(cb,15,2.8);
+    addRing(stem,12,2.8);
+    var ringCount=N.length,inner=[];
+    for(var t=0;t<9000&&inner.length<92;t++){var x=rnd()*340-170,y=rnd()*210-155;
+      if(!inside(cere,x,y))continue;var ok=true;
+      for(var i=0;i<N.length;i++)if(dist(N[i],[x,y])<(i<ringCount?17:23)){ok=false;break;}
+      if(ok){N.push([x,y,2.2+rnd()*2.6]);inner.push(N.length-1);}}
+    // cerebellum interior
+    for(var t=0;t<200;t++){var x=90+rnd()*100-50,y=82+rnd()*50-25;if(!inside(cb,x,y))continue;var ok=true;for(var i=0;i<N.length;i++)if(dist(N[i],[x,y])<18){ok=false;break;}if(ok)N.push([x,y,2.4]);}
+    // connect each node to its nearest neighbours
+    var have={};E.forEach(function(e){have[e[0]+'-'+e[1]]=have[e[1]+'-'+e[0]]=1;});
+    for(var i=0;i<N.length;i++){var ds=[];for(var j=0;j<N.length;j++)if(j!==i){var d=dist(N[i],N[j]);if(d<44)ds.push([d,j]);}
+      ds.sort(function(a,b){return a[0]-b[0];});
+      for(var k=0;k<Math.min(3,ds.length);k++){var j=ds[k][1];if(!have[i+'-'+j]){have[i+'-'+j]=have[j+'-'+i]=1;E.push([i,j]);}}}
+    // fold lines (sulci) drawn as glowing curves
+    var folds=[[[-132,40],[-70,34],[-25,10],[45,-6]],[[-4,-150],[14,-110],[-14,-72],[6,-26]],[[122,-96],[98,-64],[112,-30],[92,6]],[[-150,-40],[-120,-60],[-92,-48],[-70,-78]],[[-60,-120],[-30,-98],[-48,-70],[-20,-52]],[[40,-120],[62,-92],[40,-70],[72,-50]],[[-110,0],[-86,-18],[-64,-4],[-48,-22]],[[90,-125],[120,-110],[128,-82],[150,-60]],[[-30,-20],[-6,-4],[24,-24],[52,-18]],[[60,20],[88,4],[112,22],[138,6]],[[-100,-96],[-122,-76],[-108,-52],[-130,-34]]];
+    return{N:N,E:E,folds:folds,cere:cere};
+  }
+  function brain(cv){
+    if(!cv)return;
+    var M=buildBrain(),cx=cv.getContext('2d'),N=M.N,E=M.E,adj=N.map(function(){return[];}),W=0,H=0,sc=1,glow=N.map(function(){return 0;}),pulses=[],last=0,visible=true,running=false;
     E.forEach(function(e,i){adj[e[0]].push([e[1],i]);adj[e[1]].push([e[0],i]);});
     var stops=[[34,211,238],[99,102,241],[217,70,239]];
     function grad(t){t=Math.max(0,Math.min(1,t));var k=t<.55?0:1,u=k?(t-.55)/.45:t/.55,a=stops[k],b=stops[k+1];
       return[Math.round(a[0]+(b[0]-a[0])*u),Math.round(a[1]+(b[1]-a[1])*u),Math.round(a[2]+(b[2]-a[2])*u)];}
-    var tn=N.map(function(n){return(n[0]+n[1]+340)/680;});
-    var flat=['#818cf8','#a5f3fc','#22d3ee','#818cf8'];
+    var tn=N.map(function(n){return(n[0]+n[1]+330)/660;});
     function rgb(c,a){return'rgba('+c[0]+','+c[1]+','+c[2]+','+a+')';}
-    function size(){var d=Math.min(devicePixelRatio||1,2),r=cv.getBoundingClientRect();W=r.width;H=r.height;cv.width=W*d;cv.height=H*d;cx.setTransform(d,0,0,d,0,0);sc=Math.min(W,H)/(neon?360:400);}
-    function px(i){return[W/2+N[i][0]*sc,H/2+N[i][1]*sc];}
+    function size(){var d=Math.min(devicePixelRatio||1,2),r=cv.getBoundingClientRect();W=r.width;H=r.height;cv.width=W*d;cv.height=H*d;cx.setTransform(d,0,0,d,0,0);sc=Math.min(W,H)/360;}
+    function px(i){return[W/2+N[i][0]*sc,H/2+N[i][1]*sc-6*sc];}
     function fire(i,hops){glow[i]=1;if(hops<=0)return;var nb=adj[i];if(!nb.length)return;
       var k=Math.min(nb.length,1+Math.floor(Math.random()*2));
       for(var n=0;n<k;n++){var c=nb[Math.floor(Math.random()*nb.length)];pulses.push({a:i,b:c[0],t:0,hops:hops-1,speed:.0016+Math.random()*.0012});}}
+    function drawFolds(){
+      cx.lineCap='round';cx.lineWidth=3.2*sc/1.4;
+      M.folds.forEach(function(f,i){var c=grad((f[0][0]+f[3][0]+f[0][1]+f[3][1]+660)/1320);
+        cx.strokeStyle=rgb(c,.85);cx.shadowColor=rgb(c,1);cx.shadowBlur=16;
+        cx.beginPath();cx.moveTo(W/2+f[0][0]*sc,H/2+f[0][1]*sc-6*sc);
+        cx.bezierCurveTo(W/2+f[1][0]*sc,H/2+f[1][1]*sc-6*sc,W/2+f[2][0]*sc,H/2+f[2][1]*sc-6*sc,W/2+f[3][0]*sc,H/2+f[3][1]*sc-6*sc);cx.stroke();});
+      cx.shadowBlur=0;}
     function frame(ts){
       var dt=Math.min(ts-last,50);last=ts;
       cx.clearRect(0,0,W,H);
       var i,a,b,g,c;
-      cx.lineWidth=neon?1.3:1;
+      drawFolds();
+      cx.lineWidth=1.3;
       for(i=0;i<E.length;i++){a=px(E[i][0]);b=px(E[i][1]);g=Math.max(glow[E[i][0]],glow[E[i][1]]);
-        if(neon){c=grad((tn[E[i][0]]+tn[E[i][1]])/2);cx.strokeStyle=rgb(c,.30+.6*g);
-          if(g>.05){cx.shadowColor=rgb(c,1);cx.shadowBlur=14*g;}}
-        else cx.strokeStyle='rgba(129,140,248,'+(0.22+0.4*g)+')';
+        c=grad((tn[E[i][0]]+tn[E[i][1]])/2);cx.strokeStyle=rgb(c,.32+.6*g);
+        if(g>.05){cx.shadowColor=rgb(c,1);cx.shadowBlur=14*g;}
         cx.beginPath();cx.moveTo(a[0],a[1]);cx.lineTo(b[0],b[1]);cx.stroke();cx.shadowBlur=0;}
       for(var p=pulses.length-1;p>=0;p--){var q=pulses[p];q.t+=q.speed*dt;
         var a2=px(q.a),b2=px(q.b),f=Math.min(q.t,1),x=a2[0]+(b2[0]-a2[0])*f,y=a2[1]+(b2[1]-a2[1])*f,tf=Math.max(q.t-.25,0);
-        c=neon?grad(tn[q.b]):[165,243,252];
-        cx.strokeStyle=rgb(c,.7);cx.lineWidth=2;if(neon){cx.shadowColor=rgb(c,1);cx.shadowBlur=16;}
+        c=grad(tn[q.b]);cx.strokeStyle=rgb(c,.75);cx.lineWidth=2;cx.shadowColor=rgb(c,1);cx.shadowBlur=16;
         cx.beginPath();cx.moveTo(a2[0]+(b2[0]-a2[0])*tf,a2[1]+(b2[1]-a2[1])*tf);cx.lineTo(x,y);cx.stroke();
-        cx.fillStyle=neon?'#ffffff':'#a5f3fc';cx.beginPath();cx.arc(x,y,3.2*sc+1,0,6.283);cx.fill();cx.shadowBlur=0;
+        cx.fillStyle='#ffffff';cx.beginPath();cx.arc(x,y,3.2*sc+1,0,6.283);cx.fill();cx.shadowBlur=0;
         if(q.t>=1){pulses.splice(p,1);fire(q.b,q.hops);}}
-      for(var n=0;n<N.length;n++){c=px(n);var r=(N[n][2]*.9+1.2)*sc;glow[n]=Math.max(0,glow[n]-dt*.0011);
-        if(neon){var col=grad(tn[n]);cx.shadowColor=rgb(col,1);cx.shadowBlur=10+18*glow[n];
-          cx.fillStyle=glow[n]>.35?'#ffffff':rgb(col,1);}
-        else{if(glow[n]>.02){cx.fillStyle='rgba(129,140,248,'+(glow[n]*.28)+')';cx.beginPath();cx.arc(c[0],c[1],r+10*sc*glow[n],0,6.283);cx.fill();}
-          cx.fillStyle=glow[n]>.35?'#ffffff':flat[n%4];}
+      for(var n=0;n<N.length;n++){c=px(n);var r=(N[n][2]*.9+1)*sc;glow[n]=Math.max(0,glow[n]-dt*.0011);
+        var col=grad(tn[n]);cx.shadowColor=rgb(col,1);cx.shadowBlur=10+18*glow[n];
+        cx.fillStyle=glow[n]>.35?'#ffffff':rgb(col,1);
         cx.beginPath();cx.arc(c[0],c[1],r*(1+.35*glow[n]),0,6.283);cx.fill();cx.shadowBlur=0;}
-      if(!reduce&&Math.random()<dt/(neon?420:520))fire(Math.floor(Math.random()*N.length),4+Math.floor(Math.random()*3));
+      if(!reduce&&Math.random()<dt/380)fire(Math.floor(Math.random()*N.length),4+Math.floor(Math.random()*4));
       if(!reduce&&visible)requestAnimationFrame(frame);else running=false;
     }
     new IntersectionObserver(function(es){visible=es[0].isIntersecting;if(visible&&!running&&!reduce){running=true;last=performance.now();requestAnimationFrame(frame);}}).observe(cv);
     addEventListener('resize',function(){size();if(reduce)frame(performance.now());});
     size();
-    if(reduce){for(var k=0;k<7;k++)glow[Math.floor(Math.random()*N.length)]=.9;frame(performance.now());}
+    if(reduce){for(var k=0;k<8;k++)glow[Math.floor(Math.random()*N.length)]=.9;frame(performance.now());}
     else{running=true;last=performance.now();requestAnimationFrame(frame);}
   }
-  brain(document.getElementById('hero-brain'),true);
-  brain(document.getElementById('brain'),false);
+  brain(document.getElementById('hero-brain'));
 
   var navLinks=[].slice.call(document.querySelectorAll('nav .links a'));
   var spy=new IntersectionObserver(function(es){es.forEach(function(e){
