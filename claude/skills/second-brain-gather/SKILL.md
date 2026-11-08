@@ -12,7 +12,7 @@ Collect the user's agent setup into their second-brain repo safely. Never publis
 1. Confirm the current repo has `scripts/gather.sh`. If not, tell the user to start from the template.
 2. Run `scripts/gather.sh` (pass the user's code folder if it is not `~/code`).
 3. Read `git diff --stat`, then read every new or changed memory, settings and instruction file. Flag, do not silently keep:
-   - Employer, client or colleague names and project state
+   - Organization, client or colleague names and project state
    - Emails, IP addresses, account or tenant IDs, absolute home paths, internal URLs
    - Personal notes (interviews, finances, health, family)
 4. For a **private backup** keep everything except credentials. For a **public copy** keep only generic working-style and feedback notes and skills the user wrote; propose deletions and let the user confirm.

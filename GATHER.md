@@ -21,7 +21,7 @@ Credentials and tokens, SSH and cloud-CLI config folders, `.env` files, conversa
 ## The loop
 
 1. **Gather**: `scripts/gather.sh [code-dir]` copies the assets above into this repo and swaps your username out of folder names and settings paths.
-2. **Trim**: read `git diff`. Delete memory about employers, clients and other people. Keep working-style notes and lessons learned.
+2. **Trim**: read `git diff`. Delete memory about organizations, clients and other people. Keep working-style notes and lessons learned.
 3. **Check**: `scripts/check-denylist.sh` and `gitleaks detect` must pass. Put private terms in the `EXTRA_DENYLIST` secret.
 4. **Flatten**: `python3 scripts/build-portable-context.py` produces the single file other agents can read.
 5. **Commit** to a private repo. Gather again whenever your memory has grown.

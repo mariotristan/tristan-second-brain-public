@@ -1,6 +1,6 @@
 # Restoring your setup with other agents and tools
 
-Use this if I can't use Claude Code (outage, account/policy block, new employer rules, new machine without it).
+Use this if you can't use Claude Code (outage, account or policy block, new machine without it).
 Everything below starts from files in your own private backup of this template. Paths and file names for each tool were correct when written (2026-11): check the tool's docs if something doesn't load.
 
 ## 0. What is portable

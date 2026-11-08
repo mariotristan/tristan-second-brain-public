@@ -106,7 +106,7 @@ footer a{color:var(--ice)}
 <header class="wrap">
   <nav>
     <a class="brand" href="#top"><i></i>Second Brain</a>
-    <div class="links"><a href="#gather">Gather</a><a href="#restore">Restore</a><a href="#start">Start</a><a class="cta" href="https://github.com/mariotristan/tristan-second-brain-public">GitHub →</a></div>
+    <div class="links"><a href="#why">Why</a><a href="#gather">Gather</a><a href="#restore">Restore</a><a href="#start">Start</a><a class="cta" href="https://github.com/mariotristan/tristan-second-brain-public">GitHub →</a></div>
   </nav>
 </header>
 
@@ -121,6 +121,24 @@ footer a{color:var(--ice)}
       <a class="btn ghost" href="https://github.com/mariotristan/tristan-second-brain-public">Read the source</a>
     </div>
   </div>
+
+  <section class="wrap reveal" id="why">
+    <h2>What is a <em>second brain</em>?</h2>
+    <p class="sub">Your AI agents forget. Every session starts blank, and every tool keeps its own private memory. A second brain is the one place you keep what makes them work your way, as plain files you own.</p>
+    <div class="grid">
+      <div class="card"><h3>Memory</h3><p>Your preferences, corrections and lessons learned: how you like commits written, which mistakes to avoid, what a project already decided.</p></div>
+      <div class="card"><h3>Skills</h3><p>Reusable playbooks for tasks you repeat, so you explain them once instead of every session.</p></div>
+      <div class="card"><h3>Ways of working</h3><p>Per-repo instructions, permissions and hooks: the rules that turn a generic agent into your teammate.</p></div>
+    </div>
+    <h3 style="margin:38px 0 14px;font-size:20px">Why you may need one</h3>
+    <div class="grid">
+      <div class="card"><h3>New machine</h3><p>A laptop dies or gets replaced. Without a backup, months of tuning are gone.</p></div>
+      <div class="card"><h3>Tool switch or outage</h3><p>Move between Claude, Codex, Gemini or Cursor without starting from zero. One flattened file works everywhere.</p></div>
+      <div class="card"><h3>Access changes</h3><p>Accounts, plans and policies change. Your knowledge shouldn't depend on one vendor's settings page.</p></div>
+      <div class="card"><h3>It compounds</h3><p>Each correction you save makes every future session better. A brain you back up keeps its value.</p></div>
+      <div class="card"><h3>Share what is generic</h3><p>Publish the method and examples, keep the private parts private, with guardrails that enforce the line.</p></div>
+    </div>
+  </section>
 
   <section class="wrap reveal">
     <h2>How it <em>flows</em></h2>
@@ -149,7 +167,7 @@ footer a{color:var(--ice)}
     <h3 style="margin:34px 0 14px;font-size:20px">The loop</h3>
     <div class="steps">
       <div class="step"><div><h3>Gather</h3><p><code>scripts/gather.sh [code-dir]</code> copies skills, memory, settings and repo instructions, and swaps your username out of paths.</p></div></div>
-      <div class="step"><div><h3>Trim</h3><p>Read the diff. Delete memory about employers, clients and other people. Keep working-style notes and lessons learned.</p></div></div>
+      <div class="step"><div><h3>Trim</h3><p>Read the diff. Delete memory about organizations, clients and other people. Keep working-style notes and lessons learned.</p></div></div>
       <div class="step"><div><h3>Check</h3><p><code>scripts/check-denylist.sh</code> and <code>gitleaks detect</code> must pass. Put private terms in the <code>EXTRA_DENYLIST</code> secret.</p></div></div>
       <div class="step"><div><h3>Flatten</h3><p><code>python3 scripts/build-portable-context.py</code> produces the single file other agents can read.</p></div></div>
       <div class="step"><div><h3>Commit privately</h3><p>Push to a private repo and gather again whenever your memory has grown. To publish a template, feed a separate public repo from an explicit allowlist, never the reverse.</p></div></div>

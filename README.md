@@ -36,4 +36,4 @@ MIT, see `LICENSE`.
 
 - `.github/workflows/guardrails.yml` runs `gitleaks` and `scripts/check-denylist.sh` on every push and PR.
 - `.pre-commit-config.yaml` runs the same checks locally (`pre-commit install`).
-- Put private terms (employer, client, project names) in the `EXTRA_DENYLIST` repository secret, one regex per line, so they are enforced without being written in the repo.
+- Put private terms (organization, client, project names) in the `EXTRA_DENYLIST` repository secret, one regex per line, so they are enforced without being written in the repo.
