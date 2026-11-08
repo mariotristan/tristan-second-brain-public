@@ -41,7 +41,7 @@ nav .links a[aria-current="true"]{color:#070914;font-weight:700;background:var(-
 .ribbon a:focus-visible{outline-offset:-4px}
 @media (max-width:760px){.ribbon{width:92px;height:92px}.ribbon a{top:18px;right:-40px;width:140px;font-size:10px;padding:4px 0}
   header.top{padding-top:60px;top:8px}nav{padding-left:14px}nav .brand span{display:none}nav .links a{padding:8px 11px;font-size:13px}}
-.hero{padding:70px 20px 40px;text-align:center}
+.hero{padding:56px 20px 40px}
 .eyebrow{font-size:13px;letter-spacing:.42em;color:var(--muted);text-transform:uppercase;font-weight:500}
 h1{font-size:clamp(44px,9vw,104px);line-height:1;font-weight:800;letter-spacing:.01em;margin:18px 0 22px;
   color:var(--text);text-transform:uppercase}
@@ -113,6 +113,15 @@ a:focus-visible,button:focus-visible,pre:focus-visible{outline:3px solid var(--i
 .brain-tag{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);font-family:var(--mono);font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--ice);background:rgba(7,9,20,.8);padding:6px 16px;border-radius:999px;border:1px solid rgba(129,140,248,.32);white-space:nowrap}
 #why .card{padding:30px}#why .card h3{font-size:22px;margin-bottom:8px}#why .card p{font-size:17px;line-height:1.65;color:var(--soft)}
 @media (max-width:860px){.why-top{grid-template-columns:1fr;gap:28px}}
+.hero{display:grid;grid-template-columns:minmax(260px,400px) 1fr;gap:48px;align-items:center;text-align:left}
+.hero-brain{position:relative;aspect-ratio:1/1;width:100%}
+.hero-brain::before{content:"";position:absolute;inset:-6%;border-radius:50%;background:radial-gradient(circle,rgba(99,102,241,.38) 0%,rgba(99,102,241,0) 68%)}
+#hero-brain{position:absolute;inset:0;width:100%;height:100%}
+.hero h1{font-size:clamp(44px,6.6vw,92px)}
+.hero .lede{margin:0;max-width:560px}
+.hero .chips,.hero .btns{justify-content:flex-start}
+@media (max-width:520px){.eyebrow{letter-spacing:.22em;font-size:12px}}
+@media (max-width:860px){.hero{grid-template-columns:1fr;gap:10px;text-align:center}.hero-brain{max-width:300px;margin:0 auto}.hero .lede{margin:0 auto}.hero .chips,.hero .btns{justify-content:center}}
 footer{padding:50px 0 70px;text-align:center;color:var(--muted);font-size:14px;border-top:1px solid var(--line);margin-top:30px}
 footer a{color:var(--ice)}
 .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s,transform .7s}
@@ -136,13 +145,16 @@ footer a{color:var(--ice)}
 
 <main id="top" tabindex="-1">
   <div class="wrap hero">
-    <div class="eyebrow">Your agent setup, backed up</div>
-    <h1>Second Brain</h1>
-    <p class="lede">Keep your memory, skills and ways of working in one repo. Restore them on a new machine, or carry them to any AI agent.</p>
-    <div class="chips"><span>memory</span><span>skills</span><span>ways of working</span><span>portable across agents</span></div>
-    <div class="btns">
-      <a class="btn primary" href="#start">Get started</a>
-      <a class="btn ghost" href="https://github.com/mariotristan/tristan-second-brain-public">Read the source</a>
+    <div class="hero-brain"><canvas id="hero-brain" role="img" aria-label="Neon animation of a network shaped like a brain, with signals firing between connected points"></canvas></div>
+    <div class="hero-text">
+      <div class="eyebrow">Your agent setup, backed up</div>
+      <h1>Second Brain</h1>
+      <p class="lede">Keep your memory, skills and ways of working in one repo. Restore them on a new machine, or carry them to any AI agent.</p>
+      <div class="chips"><span>memory</span><span>skills</span><span>ways of working</span><span>portable across agents</span></div>
+      <div class="btns">
+        <a class="btn primary" href="#start">Get started</a>
+        <a class="btn ghost" href="https://github.com/mariotristan/tristan-second-brain-public">Read the source</a>
+      </div>
     </div>
   </div>
 
@@ -336,40 +348,57 @@ footer a{color:var(--ice)}
   });
 
 
-  /* Brain animation: the logo's real nodes and connections, with signals cascading through them. */
-  (function(){
-    var cv=document.getElementById('brain');if(!cv||!window.BRAIN)return;
-    var cx=cv.getContext('2d'),N=BRAIN.nodes,E=BRAIN.edges,adj=N.map(function(){return[];}),W=0,H=0,sc=1,glow=N.map(function(){return 0;}),pulses=[],last=0,t0=0;
+  /* Brain animation: the logo's real nodes and connections, with signals cascading through them.
+     neon=true uses the logo's cyan > indigo > fuchsia gradient with real glow (hero only). */
+  function brain(cv,neon){
+    if(!cv||!window.BRAIN)return;
+    var cx=cv.getContext('2d'),N=BRAIN.nodes,E=BRAIN.edges,adj=N.map(function(){return[];}),W=0,H=0,sc=1,glow=N.map(function(){return 0;}),pulses=[],last=0,visible=true,running=false;
     E.forEach(function(e,i){adj[e[0]].push([e[1],i]);adj[e[1]].push([e[0],i]);});
-    var cols=['#818cf8','#a5f3fc','#22d3ee','#818cf8'],visible=true,running=false;
-    function size(){var d=Math.min(devicePixelRatio||1,2),r=cv.getBoundingClientRect();W=r.width;H=r.height;cv.width=W*d;cv.height=H*d;cx.setTransform(d,0,0,d,0,0);sc=Math.min(W,H)/400;}
+    var stops=[[34,211,238],[99,102,241],[217,70,239]];
+    function grad(t){t=Math.max(0,Math.min(1,t));var k=t<.55?0:1,u=k?(t-.55)/.45:t/.55,a=stops[k],b=stops[k+1];
+      return[Math.round(a[0]+(b[0]-a[0])*u),Math.round(a[1]+(b[1]-a[1])*u),Math.round(a[2]+(b[2]-a[2])*u)];}
+    var tn=N.map(function(n){return(n[0]+n[1]+340)/680;});
+    var flat=['#818cf8','#a5f3fc','#22d3ee','#818cf8'];
+    function rgb(c,a){return'rgba('+c[0]+','+c[1]+','+c[2]+','+a+')';}
+    function size(){var d=Math.min(devicePixelRatio||1,2),r=cv.getBoundingClientRect();W=r.width;H=r.height;cv.width=W*d;cv.height=H*d;cx.setTransform(d,0,0,d,0,0);sc=Math.min(W,H)/(neon?360:400);}
     function px(i){return[W/2+N[i][0]*sc,H/2+N[i][1]*sc];}
     function fire(i,hops){glow[i]=1;if(hops<=0)return;var nb=adj[i];if(!nb.length)return;
       var k=Math.min(nb.length,1+Math.floor(Math.random()*2));
       for(var n=0;n<k;n++){var c=nb[Math.floor(Math.random()*nb.length)];pulses.push({a:i,b:c[0],t:0,hops:hops-1,speed:.0016+Math.random()*.0012});}}
     function frame(ts){
-      if(!t0)t0=ts;var dt=Math.min(ts-last,50);last=ts;
+      var dt=Math.min(ts-last,50);last=ts;
       cx.clearRect(0,0,W,H);
-      // connections
-      cx.lineWidth=1;
-      for(var i=0;i<E.length;i++){var a=px(E[i][0]),b=px(E[i][1]),g=Math.max(glow[E[i][0]],glow[E[i][1]]);
-        cx.strokeStyle='rgba(129,140,248,'+(0.22+0.4*g)+')';cx.beginPath();cx.moveTo(a[0],a[1]);cx.lineTo(b[0],b[1]);cx.stroke();}
-      // pulses
+      var i,a,b,g,c;
+      cx.lineWidth=neon?1.3:1;
+      for(i=0;i<E.length;i++){a=px(E[i][0]);b=px(E[i][1]);g=Math.max(glow[E[i][0]],glow[E[i][1]]);
+        if(neon){c=grad((tn[E[i][0]]+tn[E[i][1]])/2);cx.strokeStyle=rgb(c,.30+.6*g);
+          if(g>.05){cx.shadowColor=rgb(c,1);cx.shadowBlur=14*g;}}
+        else cx.strokeStyle='rgba(129,140,248,'+(0.22+0.4*g)+')';
+        cx.beginPath();cx.moveTo(a[0],a[1]);cx.lineTo(b[0],b[1]);cx.stroke();cx.shadowBlur=0;}
       for(var p=pulses.length-1;p>=0;p--){var q=pulses[p];q.t+=q.speed*dt;
-        var a2=px(q.a),b2=px(q.b),x=a2[0]+(b2[0]-a2[0])*Math.min(q.t,1),y=a2[1]+(b2[1]-a2[1])*Math.min(q.t,1);
-        cx.fillStyle='#a5f3fc';cx.beginPath();cx.arc(x,y,3.2*sc+1,0,6.283);cx.fill();
-        cx.strokeStyle='rgba(165,243,252,.55)';cx.lineWidth=2;cx.beginPath();cx.moveTo(a2[0]+(b2[0]-a2[0])*Math.max(q.t-.25,0),a2[1]+(b2[1]-a2[1])*Math.max(q.t-.25,0));cx.lineTo(x,y);cx.stroke();
+        var a2=px(q.a),b2=px(q.b),f=Math.min(q.t,1),x=a2[0]+(b2[0]-a2[0])*f,y=a2[1]+(b2[1]-a2[1])*f,tf=Math.max(q.t-.25,0);
+        c=neon?grad(tn[q.b]):[165,243,252];
+        cx.strokeStyle=rgb(c,.7);cx.lineWidth=2;if(neon){cx.shadowColor=rgb(c,1);cx.shadowBlur=16;}
+        cx.beginPath();cx.moveTo(a2[0]+(b2[0]-a2[0])*tf,a2[1]+(b2[1]-a2[1])*tf);cx.lineTo(x,y);cx.stroke();
+        cx.fillStyle=neon?'#ffffff':'#a5f3fc';cx.beginPath();cx.arc(x,y,3.2*sc+1,0,6.283);cx.fill();cx.shadowBlur=0;
         if(q.t>=1){pulses.splice(p,1);fire(q.b,q.hops);}}
-      // nodes
-      for(var n=0;n<N.length;n++){var c=px(n),r=(N[n][2]*.9+1.2)*sc;glow[n]=Math.max(0,glow[n]-dt*.0011);
-        if(glow[n]>.02){cx.fillStyle='rgba(129,140,248,'+(glow[n]*.28)+')';cx.beginPath();cx.arc(c[0],c[1],r+10*sc*glow[n],0,6.283);cx.fill();}
-        cx.fillStyle=glow[n]>.35?'#ffffff':cols[n%4];cx.beginPath();cx.arc(c[0],c[1],r*(1+.35*glow[n]),0,6.283);cx.fill();}
-      if(!reduce){if(ts-t0>0&&Math.random()<dt/520)fire(Math.floor(Math.random()*N.length),4+Math.floor(Math.random()*3));if(visible)requestAnimationFrame(frame);else running=false;}
+      for(var n=0;n<N.length;n++){c=px(n);var r=(N[n][2]*.9+1.2)*sc;glow[n]=Math.max(0,glow[n]-dt*.0011);
+        if(neon){var col=grad(tn[n]);cx.shadowColor=rgb(col,1);cx.shadowBlur=10+18*glow[n];
+          cx.fillStyle=glow[n]>.35?'#ffffff':rgb(col,1);}
+        else{if(glow[n]>.02){cx.fillStyle='rgba(129,140,248,'+(glow[n]*.28)+')';cx.beginPath();cx.arc(c[0],c[1],r+10*sc*glow[n],0,6.283);cx.fill();}
+          cx.fillStyle=glow[n]>.35?'#ffffff':flat[n%4];}
+        cx.beginPath();cx.arc(c[0],c[1],r*(1+.35*glow[n]),0,6.283);cx.fill();cx.shadowBlur=0;}
+      if(!reduce&&Math.random()<dt/(neon?420:520))fire(Math.floor(Math.random()*N.length),4+Math.floor(Math.random()*3));
+      if(!reduce&&visible)requestAnimationFrame(frame);else running=false;
     }
     new IntersectionObserver(function(es){visible=es[0].isIntersecting;if(visible&&!running&&!reduce){running=true;last=performance.now();requestAnimationFrame(frame);}}).observe(cv);
     addEventListener('resize',function(){size();if(reduce)frame(performance.now());});
-    size();if(reduce){for(var k=0;k<6;k++)glow[Math.floor(Math.random()*N.length)]=.9;frame(performance.now());}else{running=true;requestAnimationFrame(frame);}
-  })();
+    size();
+    if(reduce){for(var k=0;k<7;k++)glow[Math.floor(Math.random()*N.length)]=.9;frame(performance.now());}
+    else{running=true;last=performance.now();requestAnimationFrame(frame);}
+  }
+  brain(document.getElementById('hero-brain'),true);
+  brain(document.getElementById('brain'),false);
 
   var navLinks=[].slice.call(document.querySelectorAll('nav .links a'));
   var spy=new IntersectionObserver(function(es){es.forEach(function(e){
