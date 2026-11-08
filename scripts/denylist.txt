@@ -1,0 +1,8 @@
+# Case-insensitive extended regexes; a match in any tracked file fails the check.
+# Add private terms (employer, client, project names) via the EXTRA_DENYLIST secret, never in this file.
+[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+\.(com|net|org|io|dev)
+/Users/[a-z]
+/home/[a-z]
+\b([0-9]{1,3}\.){3}[0-9]{1,3}\b
+\.ssh/
+\.aws/
