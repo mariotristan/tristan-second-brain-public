@@ -157,6 +157,22 @@ footer a{color:var(--ice)}
     </div>
   </section>
 
+  <section class="wrap reveal" id="rag" aria-labelledby="h-rag">
+    <h2 id="h-rag">Second brain vs <em>RAG</em></h2>
+    <p class="sub">They solve different problems and work well together. RAG helps an agent <em>look things up</em> in a large body of knowledge. A second brain tells an agent <em>how to behave</em> and what you have already decided.</p>
+    <div class="rows" role="table" aria-label="Second brain compared with RAG">
+      <div class="row head" role="row"><div role="columnheader">Aspect</div><div role="columnheader">Second brain</div><div role="columnheader">RAG</div></div>
+      <div class="row" role="row"><b role="cell">Purpose</b><span role="cell">Shape behavior: preferences, rules, playbooks, lessons learned</span><span role="cell">Answer questions from a large document set</span></div>
+      <div class="row" role="row"><b role="cell">Size</b><span role="cell">Small and curated, readable in minutes</span><span role="cell">Large: thousands of documents or more</span></div>
+      <div class="row" role="row"><b role="cell">How it reaches the model</b><span role="cell">Loaded into context as instructions, always or when a skill triggers</span><span role="cell">Retrieved per question by search or embeddings, then pasted into the prompt</span></div>
+      <div class="row" role="row"><b role="cell">Who writes it</b><span role="cell">You, or the agent with your approval</span><span role="cell">Mostly existing documents, ingested as they are</span></div>
+      <div class="row" role="row"><b role="cell">Infrastructure</b><span role="cell">Markdown files in a git repo</span><span role="cell">Chunking, an embedding model, a vector index, a pipeline to keep fresh</span></div>
+      <div class="row" role="row"><b role="cell">Failure mode</b><span role="cell">Stale or contradictory notes, fixed by editing a file</span><span role="cell">Missed or wrong retrieval, harder to see and debug</span></div>
+      <div class="row" role="row"><b role="cell">Portability</b><span role="cell">Any agent that reads markdown</span><span role="cell">Tied to your index and retrieval stack</span></div>
+    </div>
+    <div class="never" style="border-color:rgba(34,211,238,.4);background:rgba(34,211,238,.07)"><b style="color:var(--cyan)">Use both.</b> Keep your conventions and decisions in the second brain, and point it at a RAG tool for large reference material. The second brain can even say when and how to use that tool.</div>
+  </section>
+
   <section class="wrap reveal" aria-labelledby="h-2">
     <h2 id="h-2">How it <em>flows</em></h2>
     <p class="sub">One source of truth, flattened into plain markdown that any agent can read.</p>

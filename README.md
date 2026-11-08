@@ -6,6 +6,10 @@
 
 A template for backing up and restoring your AI-agent setup (skills, memory, settings), and for bootstrapping other agents from it.
 
+## Second brain vs RAG
+
+RAG retrieves passages from a large document set to answer a question. A second brain is a small, curated set of instructions, memory and skills that shapes how an agent behaves. It is plain markdown you own, loaded as context, and it works in any agent. They complement each other: keep conventions and decisions here, and use RAG for large reference material. A comparison table is on the project site.
+
 ## What is here
 
 | Path | Purpose |
