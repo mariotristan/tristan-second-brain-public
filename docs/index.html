@@ -76,7 +76,7 @@ h2 em{font-style:normal;background:var(--grad);-webkit-background-clip:text;back
 .term .bar button{margin-left:auto;font:inherit;font-size:12px;color:var(--ice);background:none;border:1px solid var(--line);border-radius:999px;padding:4px 14px;cursor:pointer}
 .term .bar button:hover{border-color:var(--cyan)}
 pre{font-family:var(--mono);font-size:14px;padding:24px 28px;overflow-x:auto;color:var(--soft);line-height:1.8}
-pre .c{color:#64748b}pre .p{color:var(--fuchsia)}
+pre .c{color:#94a3b8}pre .p{color:var(--fuchsia);user-select:none}
 .guard{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
 .guard .card h3::before{content:"◆ ";color:var(--cyan)}
 .steps{display:grid;gap:14px;counter-reset:s}
@@ -92,6 +92,11 @@ pre .c{color:#64748b}pre .p{color:var(--fuchsia)}
 .never b{color:var(--fuchsia)}
 .dl{margin-top:22px;display:flex;gap:14px;flex-wrap:wrap;align-items:center;color:var(--muted);font-size:14px}
 @media (max-width:760px){.row{grid-template-columns:1fr;gap:4px}.row.head{display:none}.links a:not(.cta){display:none}}
+a:focus-visible,button:focus-visible,pre:focus-visible{outline:3px solid var(--ice);outline-offset:3px;border-radius:12px}
+.skip{position:absolute;left:16px;top:-80px;z-index:10;padding:12px 22px;border-radius:999px;background:var(--ice);color:#070914;font-weight:700;text-decoration:none}
+.skip:focus{top:16px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@media (forced-colors:active){h1,h2 em,.btn.primary{background:none;color:CanvasText;-webkit-text-fill-color:currentColor;forced-color-adjust:auto}.btn,.card,.node,.step,.row,.term{border:1px solid CanvasText}}
 footer{padding:50px 0 70px;text-align:center;color:var(--muted);font-size:14px;border-top:1px solid var(--line);margin-top:30px}
 footer a{color:var(--ice)}
 .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s,transform .7s}
@@ -99,18 +104,20 @@ footer a{color:var(--ice)}
 @media (max-width:760px){.flow{grid-template-columns:1fr}.arrow{transform:rotate(90deg);justify-self:center}.hero{padding-top:40px}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}.reveal{opacity:1;transform:none}html{scroll-behavior:auto}}
 </style>
+<noscript><style>.reveal{opacity:1;transform:none}</style></noscript>
 </head>
 <body>
+<a class="skip" href="#top">Skip to content</a>
 <canvas id="net" aria-hidden="true"></canvas>
 
 <header class="wrap">
-  <nav>
+  <nav aria-label="Primary">
     <a class="brand" href="#top"><i></i>Second Brain</a>
     <div class="links"><a href="#why">Why</a><a href="#gather">Gather</a><a href="#restore">Restore</a><a href="#start">Start</a><a class="cta" href="https://github.com/mariotristan/tristan-second-brain-public">GitHub →</a></div>
   </nav>
 </header>
 
-<main id="top">
+<main id="top" tabindex="-1">
   <div class="wrap hero">
     <div class="eyebrow">Your agent setup, backed up</div>
     <h1>Second Brain</h1>
@@ -122,8 +129,8 @@ footer a{color:var(--ice)}
     </div>
   </div>
 
-  <section class="wrap reveal" id="why">
-    <h2>What is a <em>second brain</em>?</h2>
+  <section class="wrap reveal" id="why" aria-labelledby="h-1">
+    <h2 id="h-1">What is a <em>second brain</em>?</h2>
     <p class="sub">Your AI agents forget. Every session starts blank, and every tool keeps its own private memory. A second brain is the one place you keep what makes them work your way, as plain files you own.</p>
     <div class="grid">
       <div class="card"><h3>Memory</h3><p>Your preferences, corrections and lessons learned: how you like commits written, which mistakes to avoid, what a project already decided.</p></div>
@@ -140,28 +147,28 @@ footer a{color:var(--ice)}
     </div>
   </section>
 
-  <section class="wrap reveal">
-    <h2>How it <em>flows</em></h2>
+  <section class="wrap reveal" aria-labelledby="h-2">
+    <h2 id="h-2">How it <em>flows</em></h2>
     <p class="sub">One source of truth, flattened into plain markdown that any agent can read.</p>
     <div class="flow">
       <div class="node"><b>01 · CAPTURE</b><h3>Memory &amp; skills</h3><p>Working-style notes and reusable skills live as files next to your settings.</p></div>
-      <div class="arrow">➜</div>
+      <div class="arrow" aria-hidden="true">➜</div>
       <div class="node"><b>02 · FLATTEN</b><h3>Portable context</h3><p><code>build-portable-context.py</code> merges memory into one agent-agnostic file.</p></div>
-      <div class="arrow">➜</div>
+      <div class="arrow" aria-hidden="true">➜</div>
       <div class="node"><b>03 · RESTORE</b><h3>Any agent</h3><p>Drop it into each tool's global instructions and pick up where you left off.</p></div>
     </div>
   </section>
 
-  <section class="wrap reveal" id="gather">
-    <h2>Gather your <em>brain</em></h2>
+  <section class="wrap reveal" id="gather" aria-labelledby="h-3">
+    <h2 id="h-3">Gather your <em>brain</em></h2>
     <p class="sub">Before you can restore anything, collect it. Run <code>scripts/gather.sh</code> and it copies everything below into your repo.</p>
-    <div class="rows">
-      <div class="row head"><div>Asset</div><div>Where it lives</div><div>Share publicly?</div></div>
-      <div class="row"><b>Skills</b><span><code>~/.claude/skills/*</code></span><span>Only ones you wrote and reviewed</span></div>
-      <div class="row"><b>Memory</b><span><code>~/.claude/projects/&lt;project&gt;/memory/*.md</code></span><span>Rarely: project facts and personal data</span></div>
-      <div class="row"><b>Settings &amp; hooks</b><span><code>~/.claude/settings.json</code></span><span>Only as an example with placeholders</span></div>
-      <div class="row"><b>Repo instructions</b><span><code>CLAUDE.md</code>, <code>AGENTS.md</code>, <code>GEMINI.md</code></span><span>Only for repos you own</span></div>
-      <div class="row"><b>Dotfiles</b><span>shell, git, editor config</span><span>No: emails, keys, paths</span></div>
+    <div class="rows" role="table" aria-label="What to collect, where it lives, and whether to share it">
+      <div class="row head" role="row"><div role="columnheader">Asset</div><div role="columnheader">Where it lives</div><div role="columnheader">Share publicly?</div></div>
+      <div class="row" role="row"><b role="cell">Skills</b><span role="cell"><code>~/.claude/skills/*</code></span><span role="cell">Only ones you wrote and reviewed</span></div>
+      <div class="row" role="row"><b role="cell">Memory</b><span role="cell"><code>~/.claude/projects/&lt;project&gt;/memory/*.md</code></span><span role="cell">Rarely: project facts and personal data</span></div>
+      <div class="row" role="row"><b role="cell">Settings &amp; hooks</b><span role="cell"><code>~/.claude/settings.json</code></span><span role="cell">Only as an example with placeholders</span></div>
+      <div class="row" role="row"><b role="cell">Repo instructions</b><span role="cell"><code>CLAUDE.md</code>, <code>AGENTS.md</code>, <code>GEMINI.md</code></span><span role="cell">Only for repos you own</span></div>
+      <div class="row" role="row"><b role="cell">Dotfiles</b><span role="cell">shell, git, editor config</span><span role="cell">No: emails, keys, paths</span></div>
     </div>
     <div class="never"><b>Never collect:</b> credentials and tokens, SSH and cloud-CLI config folders, <code>.env</code> files, conversation transcripts and caches. Sign in again on the new machine.</div>
     <h3 style="margin:34px 0 14px;font-size:20px">The loop</h3>
@@ -175,8 +182,8 @@ footer a{color:var(--ice)}
     <p class="sub" style="margin-top:20px">Or let an agent do it: the <code>second-brain-gather</code> skill walks through this loop and flags anything risky.</p>
   </section>
 
-  <section class="wrap reveal">
-    <h2>What's <em>inside</em></h2>
+  <section class="wrap reveal" aria-labelledby="h-4">
+    <h2 id="h-4">What's <em>inside</em></h2>
     <p class="sub">A small, forkable template. Bring your own memory.</p>
     <div class="grid">
       <div class="card"><h3>Restore guide</h3><p>Where Codex, Gemini CLI, Copilot, Cursor, Windsurf, Cline, Aider, Kiro, Zed and others read instructions.</p></div>
@@ -186,37 +193,37 @@ footer a{color:var(--ice)}
     </div>
   </section>
 
-  <section class="wrap reveal" id="restore">
-    <h2>Restore into <em>any agent</em></h2>
+  <section class="wrap reveal" id="restore" aria-labelledby="h-5">
+    <h2 id="h-5">Restore into <em>any agent</em></h2>
     <p class="sub">Put the flattened context in the tool's global instructions, then copy each repo's <code>AGENTS.md</code> back.</p>
-    <div class="rows">
-      <div class="row head"><div>Tool</div><div>Global instructions</div><div>Per-repo</div></div>
-      <div class="row"><b>Codex CLI</b><span><code>~/.codex/AGENTS.md</code></span><span><code>AGENTS.md</code></span></div>
-      <div class="row"><b>Gemini CLI</b><span><code>~/.gemini/GEMINI.md</code></span><span><code>GEMINI.md</code></span></div>
-      <div class="row"><b>GitHub Copilot</b><span>VS Code user instructions</span><span><code>.github/copilot-instructions.md</code></span></div>
-      <div class="row"><b>Cursor</b><span>Settings &gt; Rules &gt; User Rules</span><span><code>.cursor/rules/*.mdc</code></span></div>
-      <div class="row"><b>Windsurf</b><span><code>~/.codeium/windsurf/memories/global_rules.md</code></span><span><code>.windsurf/rules/*.md</code></span></div>
-      <div class="row"><b>Aider</b><span><code>~/.aider.conf.yml</code> with <code>read:</code></span><span><code>CONVENTIONS.md</code></span></div>
-      <div class="row"><b>Kiro</b><span><code>~/.kiro/steering/*.md</code></span><span><code>.kiro/steering/*.md</code></span></div>
-      <div class="row"><b>Claude on the web</b><span>Settings &gt; Profile preferences</span><span>Project instructions</span></div>
+    <div class="rows" role="table" aria-label="Where each tool reads instructions">
+      <div class="row head" role="row"><div role="columnheader">Tool</div><div role="columnheader">Global instructions</div><div role="columnheader">Per-repo</div></div>
+      <div class="row" role="row"><b role="cell">Codex CLI</b><span role="cell"><code>~/.codex/AGENTS.md</code></span><span role="cell"><code>AGENTS.md</code></span></div>
+      <div class="row" role="row"><b role="cell">Gemini CLI</b><span role="cell"><code>~/.gemini/GEMINI.md</code></span><span role="cell"><code>GEMINI.md</code></span></div>
+      <div class="row" role="row"><b role="cell">GitHub Copilot</b><span role="cell">VS Code user instructions</span><span role="cell"><code>.github/copilot-instructions.md</code></span></div>
+      <div class="row" role="row"><b role="cell">Cursor</b><span role="cell">Settings &gt; Rules &gt; User Rules</span><span role="cell"><code>.cursor/rules/*.mdc</code></span></div>
+      <div class="row" role="row"><b role="cell">Windsurf</b><span role="cell"><code>~/.codeium/windsurf/memories/global_rules.md</code></span><span role="cell"><code>.windsurf/rules/*.md</code></span></div>
+      <div class="row" role="row"><b role="cell">Aider</b><span role="cell"><code>~/.aider.conf.yml</code> with <code>read:</code></span><span role="cell"><code>CONVENTIONS.md</code></span></div>
+      <div class="row" role="row"><b role="cell">Kiro</b><span role="cell"><code>~/.kiro/steering/*.md</code></span><span role="cell"><code>.kiro/steering/*.md</code></span></div>
+      <div class="row" role="row"><b role="cell">Claude on the web</b><span role="cell">Settings &gt; Profile preferences</span><span role="cell">Project instructions</span></div>
     </div>
     <p class="sub" style="margin-top:18px">Paths were correct when written (2026-11). The repo's restore guide covers more tools and how to re-create hooks and permissions elsewhere.</p>
   </section>
 
-  <section class="wrap reveal">
-    <h2>Works with <em>your tools</em></h2>
+  <section class="wrap reveal" aria-labelledby="h-6">
+    <h2 id="h-6">Works with <em>your tools</em></h2>
     <p class="sub">Anything that reads markdown instructions. <code style="font-family:var(--mono);color:var(--ice)">AGENTS.md</code> is the closest thing to a standard.</p>
     <div class="agents">
       <span>Claude Code</span><span>Codex CLI</span><span>Gemini CLI</span><span>GitHub Copilot</span><span>Cursor</span><span>Windsurf</span><span>Cline / Roo</span><span>Aider</span><span>Kiro</span><span>Zed AI</span><span>opencode</span><span>Amp</span>
     </div>
   </section>
 
-  <section class="wrap reveal" id="start">
-    <h2>Get <em>started</em></h2>
+  <section class="wrap reveal" id="start" aria-labelledby="h-7">
+    <h2 id="h-7">Get <em>started</em></h2>
     <p class="sub">Copy the template into a private repo of your own, then make it yours.</p>
     <div class="term">
-      <div class="bar"><i></i><i></i><i></i><button id="copy" type="button">Copy</button></div>
-<pre id="cmds"><span class="c"># 1. copy the template into your own private repo</span>
+      <div class="bar"><i></i><i></i><i></i><button id="copy" type="button" aria-label="Copy commands">Copy</button><span class="sr" id="copied" role="status" aria-live="polite"></span></div>
+<pre id="cmds" tabindex="0" aria-label="Setup commands"><span class="c"># 1. copy the template into your own private repo</span>
 <span class="p">$</span> git clone https://github.com/mariotristan/tristan-second-brain-public my-second-brain
 <span class="p">$</span> cd my-second-brain
 
@@ -232,8 +239,8 @@ footer a{color:var(--ice)}
     <div class="dl"><a class="btn ghost" href="https://github.com/mariotristan/tristan-second-brain-public/archive/refs/heads/main.zip">Download as .zip</a> No GitHub account needed.</div>
   </section>
 
-  <section class="wrap reveal">
-    <h2>Built-in <em>guardrails</em></h2>
+  <section class="wrap reveal" aria-labelledby="h-8">
+    <h2 id="h-8">Built-in <em>guardrails</em></h2>
     <p class="sub">A backup repo drifts toward leaking. These checks run on every push.</p>
     <div class="guard">
       <div class="card"><h3>Secret scanning</h3><p>gitleaks in CI and as a pre-commit hook.</p></div>
@@ -284,10 +291,11 @@ footer a{color:var(--ice)}
     c.addEventListener('pointermove',function(e){var r=c.getBoundingClientRect();c.style.setProperty('--mx',(e.clientX-r.left)+'px');c.style.setProperty('--my',(e.clientY-r.top)+'px');});
   });
 
-  var btn=document.getElementById('copy');
+  var btn=document.getElementById('copy'),live=document.getElementById('copied');
+  function say(t){btn.textContent=t==='Copied'?'Copied':'Copy';live.textContent=t==='Copied'?'Commands copied':'Select the commands to copy them';}
   btn.addEventListener('click',function(){
-    var t=document.getElementById('cmds').innerText;
-    (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(function(){btn.textContent='Copied';setTimeout(function(){btn.textContent='Copy';},1500);},function(){btn.textContent='Select text';});
+    var t=document.getElementById('cmds').innerText.split('\n').filter(function(l){return /^\$ /.test(l);}).map(function(l){return l.slice(2);}).join('\n');
+    (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(function(){say('Copied');setTimeout(function(){say('');},1500);},function(){say('fail');});
   });
 })();
 </script>
