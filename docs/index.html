@@ -17,7 +17,7 @@
   --mono:ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,monospace;
 }
 *{box-sizing:border-box;margin:0}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;scroll-padding-top:96px}
 body{background:var(--bg);color:var(--text);font-family:var(--font);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
 #net{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
 body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
@@ -26,14 +26,23 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
              radial-gradient(45% 40% at 50% 100%,rgba(34,211,238,.12),transparent 70%)}
 main,header,footer{position:relative;z-index:1}
 .wrap{max-width:1080px;margin:0 auto;padding:0 20px}
-nav{display:flex;justify-content:space-between;align-items:center;padding:22px 0}
-nav .brand{display:flex;gap:12px;align-items:center;font-weight:700;letter-spacing:.14em;font-size:13px;color:var(--soft);text-decoration:none;text-transform:uppercase}
+header.top{position:sticky;top:12px;z-index:30;padding:14px 20px 0;pointer-events:none}
+nav{pointer-events:auto;max-width:760px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 8px 8px 22px;
+  border:1px solid var(--line);border-radius:999px;background:rgba(10,13,36,.62);backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4);
+  box-shadow:0 10px 40px rgba(0,0,0,.45),0 0 0 1px rgba(255,255,255,.03) inset,0 0 36px rgba(99,102,241,.18)}
+nav .brand{display:flex;gap:12px;align-items:center;font-weight:700;letter-spacing:.14em;font-size:13px;color:var(--soft);text-decoration:none;text-transform:uppercase;white-space:nowrap}
 nav .brand i{width:10px;height:10px;border-radius:50%;background:var(--grad);box-shadow:0 0 16px var(--fuchsia)}
-nav .links{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
-nav .links a{font-size:14px;color:var(--soft);text-decoration:none;padding:8px 14px;border-radius:999px;transition:.2s}
-nav .links a:hover{color:var(--ice)}
-nav a.cta{font-size:14px;color:var(--ice);text-decoration:none;border:1px solid var(--line);padding:8px 16px;border-radius:999px;transition:.2s}
-nav a.cta:hover{border-color:var(--fuchsia);box-shadow:0 0 24px rgba(232,121,249,.35)}
+nav .links{display:flex;gap:2px;align-items:center;padding:4px;border-radius:999px;background:rgba(20,24,58,.7)}
+nav .links a{position:relative;font-size:14px;font-weight:500;color:var(--soft);text-decoration:none;padding:9px 18px;border-radius:999px;transition:color .2s,background .2s}
+nav .links a:hover{color:var(--ice);background:rgba(129,140,248,.14)}
+nav .links a[aria-current="true"]{color:#070914;font-weight:700;background:var(--grad);box-shadow:0 0 22px rgba(232,121,249,.4)}
+.ribbon{position:absolute;top:0;right:0;width:150px;height:150px;overflow:hidden;z-index:40;pointer-events:none}
+.ribbon a{pointer-events:auto;position:absolute;top:34px;right:-46px;width:210px;text-align:center;transform:rotate(45deg);padding:7px 0;
+  background:var(--grad);color:#070914;font-size:13px;font-weight:800;letter-spacing:.04em;text-decoration:none;box-shadow:0 4px 24px rgba(232,121,249,.45);transition:filter .2s}
+.ribbon a:hover{filter:brightness(1.12)}
+.ribbon a:focus-visible{outline-offset:-4px}
+@media (max-width:760px){.ribbon{width:110px;height:110px}.ribbon a{top:24px;right:-44px;width:160px;font-size:11px;padding:5px 0}
+  header.top{padding-top:62px;top:8px}nav{padding-left:14px}nav .brand span{display:none}nav .links a{padding:8px 11px;font-size:13px}}
 .hero{padding:70px 0 40px;text-align:center}
 .eyebrow{font-size:13px;letter-spacing:.42em;color:var(--muted);text-transform:uppercase;font-weight:500}
 h1{font-size:clamp(44px,9vw,104px);line-height:1;font-weight:800;letter-spacing:.01em;margin:18px 0 22px;
@@ -91,7 +100,7 @@ pre .c{color:#94a3b8}pre .p{color:var(--fuchsia);user-select:none}
 .never{margin-top:18px;padding:18px 26px;border-radius:28px;border:1px solid rgba(232,121,249,.4);background:rgba(217,70,239,.08);color:var(--soft);font-size:15px}
 .never b{color:var(--fuchsia)}
 .dl{margin-top:22px;display:flex;gap:14px;flex-wrap:wrap;align-items:center;color:var(--muted);font-size:14px}
-@media (max-width:760px){.row{grid-template-columns:1fr;gap:4px}.row.head{display:none}.links a:not(.cta){display:none}}
+@media (max-width:760px){.row{grid-template-columns:1fr;gap:4px}.row.head{display:none}}
 a:focus-visible,button:focus-visible,pre:focus-visible{outline:3px solid var(--ice);outline-offset:3px;border-radius:12px}
 .skip{position:absolute;left:16px;top:-80px;z-index:10;padding:12px 22px;border-radius:999px;background:var(--ice);color:#070914;font-weight:700;text-decoration:none}
 .skip:focus{top:16px}
@@ -110,10 +119,11 @@ footer a{color:var(--ice)}
 <a class="skip" href="#top">Skip to content</a>
 <canvas id="net" aria-hidden="true"></canvas>
 
-<header class="wrap">
+<div class="ribbon"><a href="https://github.com/mariotristan/tristan-second-brain-public" aria-label="Fork me on GitHub">Fork me on GitHub</a></div>
+<header class="top">
   <nav aria-label="Primary">
-    <a class="brand" href="#top"><i></i>Second Brain</a>
-    <div class="links"><a href="#why">Why</a><a href="#gather">Gather</a><a href="#restore">Restore</a><a href="#start">Start</a><a class="cta" href="https://github.com/mariotristan/tristan-second-brain-public">GitHub →</a></div>
+    <a class="brand" href="#top"><i></i><span>Second Brain</span></a>
+    <div class="links"><a href="#why">Why</a><a href="#gather">Gather</a><a href="#restore">Restore</a><a href="#start">Start</a></div>
   </nav>
 </header>
 
@@ -290,6 +300,12 @@ footer a{color:var(--ice)}
   document.querySelectorAll('.card').forEach(function(c){
     c.addEventListener('pointermove',function(e){var r=c.getBoundingClientRect();c.style.setProperty('--mx',(e.clientX-r.left)+'px');c.style.setProperty('--my',(e.clientY-r.top)+'px');});
   });
+
+  var navLinks=[].slice.call(document.querySelectorAll('nav .links a'));
+  var spy=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(e.isIntersecting){navLinks.forEach(function(a){if(a.getAttribute('href')==='#'+e.target.id)a.setAttribute('aria-current','true');else a.removeAttribute('aria-current');});}
+  });},{rootMargin:'-40% 0px -55% 0px'});
+  navLinks.forEach(function(a){var t=document.querySelector(a.getAttribute('href'));if(t)spy.observe(t);});
 
   var btn=document.getElementById('copy'),live=document.getElementById('copied');
   function say(t){btn.textContent=t==='Copied'?'Copied':'Copy';live.textContent=t==='Copied'?'Commands copied':'Select the commands to copy them';}
