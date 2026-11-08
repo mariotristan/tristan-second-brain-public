@@ -73,9 +73,9 @@ h2 em{font-style:normal;background:var(--grad);-webkit-background-clip:text;back
 .card h3{font-size:18px;margin-bottom:6px}
 .card p{color:var(--muted);font-size:15px;position:relative;z-index:1}
 .card code{font-family:var(--mono);font-size:13px;color:var(--ice)}
-.agents{display:flex;flex-wrap:wrap;gap:10px}
-.agents span{padding:10px 18px;border-radius:999px;border:1px solid rgba(129,140,248,.32);background:var(--panel);font-size:15px;color:var(--soft);transition:.2s}
-.agents span:hover{border-color:var(--cyan);color:var(--ice);box-shadow:none}
+.agents{display:flex;flex-wrap:wrap;gap:8px 0;font-size:18px;color:var(--soft)}
+.agents span::after{content:"\00b7";margin:0 14px;color:var(--indigo)}
+.agents span:last-child::after{content:none}
 .term{border:1px solid rgba(129,140,248,.32);border-radius:28px;background:#050712;overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,.45)}
 .term .bar{display:flex;gap:8px;align-items:center;padding:14px 22px;border-bottom:1px solid var(--line);background:var(--panel)}
 .term .bar i{width:11px;height:11px;border-radius:50%;background:var(--panel-2);border:1px solid rgba(129,140,248,.32)}
