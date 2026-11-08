@@ -29,6 +29,9 @@ main,header,footer{position:relative;z-index:1}
 nav{display:flex;justify-content:space-between;align-items:center;padding:22px 0}
 nav .brand{display:flex;gap:12px;align-items:center;font-weight:700;letter-spacing:.14em;font-size:13px;color:var(--soft);text-decoration:none;text-transform:uppercase}
 nav .brand i{width:10px;height:10px;border-radius:50%;background:var(--grad);box-shadow:0 0 16px var(--fuchsia)}
+nav .links{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+nav .links a{font-size:14px;color:var(--soft);text-decoration:none;padding:8px 14px;border-radius:999px;transition:.2s}
+nav .links a:hover{color:var(--ice)}
 nav a.cta{font-size:14px;color:var(--ice);text-decoration:none;border:1px solid var(--line);padding:8px 16px;border-radius:999px;transition:.2s}
 nav a.cta:hover{border-color:var(--fuchsia);box-shadow:0 0 24px rgba(232,121,249,.35)}
 .hero{padding:70px 0 40px;text-align:center}
@@ -76,6 +79,19 @@ pre{font-family:var(--mono);font-size:14px;padding:24px 28px;overflow-x:auto;col
 pre .c{color:#64748b}pre .p{color:var(--fuchsia)}
 .guard{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
 .guard .card h3::before{content:"◆ ";color:var(--cyan)}
+.steps{display:grid;gap:14px;counter-reset:s}
+.step{display:flex;gap:18px;align-items:flex-start;padding:20px 24px;border:1px solid var(--line);border-radius:28px;background:rgba(14,19,48,.6);backdrop-filter:blur(8px)}
+.step::before{counter-increment:s;content:counter(s);flex:none;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-weight:800;color:#070914;background:var(--grad)}
+.step h3{font-size:18px;margin-bottom:2px}.step p{color:var(--muted);font-size:15px}
+.step code,.rows code,.sub code{font-family:var(--mono);font-size:13px;color:var(--ice)}
+.rows{display:grid;gap:10px}
+.row{display:grid;grid-template-columns:200px 1fr 1fr;gap:16px;padding:16px 24px;border:1px solid var(--line);border-radius:28px;background:rgba(14,19,48,.55);font-size:15px;align-items:center}
+.row.head{background:none;border-color:transparent;color:var(--muted);font-size:12px;letter-spacing:.2em;text-transform:uppercase;padding-bottom:0}
+.row b{color:var(--text)}.row span{color:var(--muted)}
+.never{margin-top:18px;padding:18px 26px;border-radius:28px;border:1px solid rgba(232,121,249,.4);background:rgba(217,70,239,.08);color:var(--soft);font-size:15px}
+.never b{color:var(--fuchsia)}
+.dl{margin-top:22px;display:flex;gap:14px;flex-wrap:wrap;align-items:center;color:var(--muted);font-size:14px}
+@media (max-width:760px){.row{grid-template-columns:1fr;gap:4px}.row.head{display:none}.links a:not(.cta){display:none}}
 footer{padding:50px 0 70px;text-align:center;color:var(--muted);font-size:14px;border-top:1px solid var(--line);margin-top:30px}
 footer a{color:var(--ice)}
 .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s,transform .7s}
@@ -90,7 +106,7 @@ footer a{color:var(--ice)}
 <header class="wrap">
   <nav>
     <a class="brand" href="#top"><i></i>Second Brain</a>
-    <a class="cta" href="https://github.com/mariotristan/tristan-second-brain-public">View on GitHub →</a>
+    <div class="links"><a href="#gather">Gather</a><a href="#restore">Restore</a><a href="#start">Start</a><a class="cta" href="https://github.com/mariotristan/tristan-second-brain-public">GitHub →</a></div>
   </nav>
 </header>
 
@@ -118,6 +134,29 @@ footer a{color:var(--ice)}
     </div>
   </section>
 
+  <section class="wrap reveal" id="gather">
+    <h2>Gather your <em>brain</em></h2>
+    <p class="sub">Before you can restore anything, collect it. Run <code>scripts/gather.sh</code> and it copies everything below into your repo.</p>
+    <div class="rows">
+      <div class="row head"><div>Asset</div><div>Where it lives</div><div>Share publicly?</div></div>
+      <div class="row"><b>Skills</b><span><code>~/.claude/skills/*</code></span><span>Only ones you wrote and reviewed</span></div>
+      <div class="row"><b>Memory</b><span><code>~/.claude/projects/&lt;project&gt;/memory/*.md</code></span><span>Rarely: project facts and personal data</span></div>
+      <div class="row"><b>Settings &amp; hooks</b><span><code>~/.claude/settings.json</code></span><span>Only as an example with placeholders</span></div>
+      <div class="row"><b>Repo instructions</b><span><code>CLAUDE.md</code>, <code>AGENTS.md</code>, <code>GEMINI.md</code></span><span>Only for repos you own</span></div>
+      <div class="row"><b>Dotfiles</b><span>shell, git, editor config</span><span>No: emails, keys, paths</span></div>
+    </div>
+    <div class="never"><b>Never collect:</b> credentials and tokens, SSH and cloud-CLI config folders, <code>.env</code> files, conversation transcripts and caches. Sign in again on the new machine.</div>
+    <h3 style="margin:34px 0 14px;font-size:20px">The loop</h3>
+    <div class="steps">
+      <div class="step"><div><h3>Gather</h3><p><code>scripts/gather.sh [code-dir]</code> copies skills, memory, settings and repo instructions, and swaps your username out of paths.</p></div></div>
+      <div class="step"><div><h3>Trim</h3><p>Read the diff. Delete memory about employers, clients and other people. Keep working-style notes and lessons learned.</p></div></div>
+      <div class="step"><div><h3>Check</h3><p><code>scripts/check-denylist.sh</code> and <code>gitleaks detect</code> must pass. Put private terms in the <code>EXTRA_DENYLIST</code> secret.</p></div></div>
+      <div class="step"><div><h3>Flatten</h3><p><code>python3 scripts/build-portable-context.py</code> produces the single file other agents can read.</p></div></div>
+      <div class="step"><div><h3>Commit privately</h3><p>Push to a private repo and gather again whenever your memory has grown. To publish a template, feed a separate public repo from an explicit allowlist, never the reverse.</p></div></div>
+    </div>
+    <p class="sub" style="margin-top:20px">Or let an agent do it: the <code>second-brain-gather</code> skill walks through this loop and flags anything risky.</p>
+  </section>
+
   <section class="wrap reveal">
     <h2>What's <em>inside</em></h2>
     <p class="sub">A small, forkable template. Bring your own memory.</p>
@@ -127,6 +166,23 @@ footer a{color:var(--ice)}
       <div class="card"><h3>Example skills</h3><p>A debugging write-up skill and a kit for building bilingual, offline kids' learning games.</p></div>
       <div class="card"><h3>Settings patterns</h3><p>An example settings file showing permission and hook patterns, with placeholders only.</p></div>
     </div>
+  </section>
+
+  <section class="wrap reveal" id="restore">
+    <h2>Restore into <em>any agent</em></h2>
+    <p class="sub">Put the flattened context in the tool's global instructions, then copy each repo's <code>AGENTS.md</code> back.</p>
+    <div class="rows">
+      <div class="row head"><div>Tool</div><div>Global instructions</div><div>Per-repo</div></div>
+      <div class="row"><b>Codex CLI</b><span><code>~/.codex/AGENTS.md</code></span><span><code>AGENTS.md</code></span></div>
+      <div class="row"><b>Gemini CLI</b><span><code>~/.gemini/GEMINI.md</code></span><span><code>GEMINI.md</code></span></div>
+      <div class="row"><b>GitHub Copilot</b><span>VS Code user instructions</span><span><code>.github/copilot-instructions.md</code></span></div>
+      <div class="row"><b>Cursor</b><span>Settings &gt; Rules &gt; User Rules</span><span><code>.cursor/rules/*.mdc</code></span></div>
+      <div class="row"><b>Windsurf</b><span><code>~/.codeium/windsurf/memories/global_rules.md</code></span><span><code>.windsurf/rules/*.md</code></span></div>
+      <div class="row"><b>Aider</b><span><code>~/.aider.conf.yml</code> with <code>read:</code></span><span><code>CONVENTIONS.md</code></span></div>
+      <div class="row"><b>Kiro</b><span><code>~/.kiro/steering/*.md</code></span><span><code>.kiro/steering/*.md</code></span></div>
+      <div class="row"><b>Claude on the web</b><span>Settings &gt; Profile preferences</span><span>Project instructions</span></div>
+    </div>
+    <p class="sub" style="margin-top:18px">Paths were correct when written (2026-11). The repo's restore guide covers more tools and how to re-create hooks and permissions elsewhere.</p>
   </section>
 
   <section class="wrap reveal">
@@ -146,7 +202,8 @@ footer a{color:var(--ice)}
 <span class="p">$</span> git clone https://github.com/mariotristan/tristan-second-brain-public my-second-brain
 <span class="p">$</span> cd my-second-brain
 
-<span class="c"># 2. add your skills, memory and settings under claude/</span>
+<span class="c"># 2. gather your skills, memory and settings</span>
+<span class="p">$</span> scripts/gather.sh
 
 <span class="c"># 3. flatten memory for any agent</span>
 <span class="p">$</span> python3 scripts/build-portable-context.py
@@ -154,6 +211,7 @@ footer a{color:var(--ice)}
 <span class="c"># 4. keep it clean</span>
 <span class="p">$</span> pre-commit install</pre>
     </div>
+    <div class="dl"><a class="btn ghost" href="https://github.com/mariotristan/tristan-second-brain-public/archive/refs/heads/main.zip">Download as .zip</a> No GitHub account needed.</div>
   </section>
 
   <section class="wrap reveal">
