@@ -17,3 +17,5 @@ jobs:
         env:
           EXTRA_DENYLIST: ${{ secrets.EXTRA_DENYLIST }}
         run: scripts/check-denylist.sh
+      - name: gather tests
+        run: scripts/test-gather.sh

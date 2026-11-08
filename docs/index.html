@@ -118,6 +118,17 @@ a:focus-visible,button:focus-visible,pre:focus-visible{outline:3px solid var(--i
 .hero .chips,.hero .btns{justify-content:flex-start}
 @media (max-width:520px){.eyebrow{letter-spacing:.22em;font-size:12px}}
 @media (max-width:860px){.hero{grid-template-columns:1fr;gap:10px;text-align:center}.hero-brain{max-width:300px;margin:0 auto}.hero .lede{margin:0 auto}.hero .chips,.hero .btns{justify-content:center}}
+.subh{margin:44px 0 16px;font-size:22px}
+#why .grid{grid-template-columns:repeat(auto-fit,minmax(290px,1fr))}
+.faq{display:grid;gap:10px}
+.faq details{border:1px solid rgba(129,140,248,.32);border-radius:28px;background:var(--panel);padding:0 26px}
+.faq summary{cursor:pointer;padding:18px 0;font-weight:700;font-size:17px;list-style:none;display:flex;justify-content:space-between;gap:16px;align-items:center}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";color:var(--indigo);font-size:24px;line-height:1;flex:none}
+.faq details[open] summary::after{content:"\2212"}
+.faq details p{padding:0 0 20px;color:var(--soft);font-size:16px;line-height:1.7}
+.faq code,.card code{font-family:var(--mono);font-size:13px;color:var(--ice)}
+.card strong{color:var(--ice)}
 footer{padding:50px 0 70px;text-align:center;color:var(--muted);font-size:14px;border-top:1px solid var(--line);margin-top:30px}
 footer a{color:var(--ice)}
 .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s,transform .7s}
@@ -205,7 +216,72 @@ footer a{color:var(--ice)}
 
   <section class="wrap reveal" id="gather" aria-labelledby="h-3">
     <h2 id="h-3">Gather your <em>brain</em></h2>
-    <p class="sub">Before you can restore anything, collect it. Run <code>scripts/gather.sh</code> and it finds what is below for Claude Code, Codex, Gemini CLI, Windsurf, Aider, Kiro, opencode and Amp, then copies it into your repo.</p>
+    <p class="sub">Collecting is the step people skip, so make it easy. Pick the path that suits you. All three end with the same thing: your setup, in one private repo.</p>
+
+    <div class="grid">
+      <div class="card"><h3>1 · Ask your agent</h3><p>Install the <code>second-brain-gather</code> skill and tell your agent to back up your setup. It previews, flags risky files and asks before it copies. <strong>Recommended.</strong></p></div>
+      <div class="card"><h3>2 · Run the script</h3><p>One command that detects your agents, previews what it found, then copies it. Good if you like seeing exactly what happens.</p></div>
+      <div class="card"><h3>3 · Copy by hand</h3><p>Use the table of locations below. Slower, but you control every file.</p></div>
+    </div>
+
+    <h3 class="subh">Option 1 · Install the skill</h3>
+    <div class="term">
+      <div class="bar"><i></i><i></i><i></i></div>
+<pre tabindex="0" aria-label="Install the gather skill"><span class="c"># Claude Code: copy the skill into your skills folder</span>
+<span class="p">$</span> cp -R claude/skills/second-brain-gather ~/.claude/skills/
+
+<span class="c"># Then tell your agent, in plain words:</span>
+<span class="c">#   "Back up my agent setup into my second-brain repo. It's a private backup."</span>
+<span class="c">#   "Gather my skills for a public copy and tell me what you had to skip."</span></pre>
+    </div>
+    <p class="sub" style="margin-top:14px">Other agents: copy the skill's <code>SKILL.md</code> into that tool's skills or rules folder (see the Restore table below).</p>
+    <div class="steps">
+      <div class="step"><div><h3>Asks the one question that matters</h3><p>Is this a private backup or a public copy? Everything else follows from that.</p></div></div>
+      <div class="step"><div><h3>Shows the plan before touching anything</h3><p>It runs a dry run and lists every file it would copy, which agents it found, and what looks risky.</p></div></div>
+      <div class="step"><div><h3>Reads what it collected</h3><p>It flags organization, client or colleague names, emails, IP addresses, account IDs, home paths and personal notes, and proposes what to drop.</p></div></div>
+      <div class="step"><div><h3>Checks, flattens and commits</h3><p>It runs the denylist and secret scan, builds the portable context file, and commits. It only ever pushes to a private repo unless you say otherwise.</p></div></div>
+    </div>
+
+    <h3 class="subh">Option 2 · Run the script</h3>
+    <div class="term">
+      <div class="bar"><i></i><i></i><i></i></div>
+<pre tabindex="0" aria-label="Run the gather script"><span class="c"># download the template (no git or GitHub login needed)</span>
+<span class="p">$</span> curl -fsSL https://github.com/mariotristan/tristan-second-brain-public/raw/main/install.sh | bash
+<span class="p">$</span> cd second-brain
+
+<span class="c"># preview first: nothing is copied</span>
+<span class="p">$</span> scripts/gather.sh --dry-run
+
+<span class="c"># then gather for real</span>
+<span class="p">$</span> scripts/gather.sh</pre>
+    </div>
+    <p class="sub" style="margin-top:14px">Prefer to read before you run? <code>install.sh</code> is about twenty lines, and the zip download in Get started does the same thing.</p>
+
+    <h3 class="subh">What a dry run shows</h3>
+    <div class="term">
+      <div class="bar"><i></i><i></i><i></i></div>
+<pre tabindex="0" aria-label="Example dry run output">skill     ~/.claude/skills/kb                         copy
+skill     ~/.claude/skills/my-helper                  copy <span class="p">[FLAGGED]</span>
+memory    ~/.claude/projects/-HOME-code-app/memory    copy
+global    ~/.gemini/GEMINI.md                         copy
+repo      ~/code/app/AGENTS.md                        copy
+
+agents detected: claude cursor gemini
+mode: private (dry run, nothing copied)
+would copy/copied: 5, skipped: 0, flagged: 1</pre>
+    </div>
+    <p class="sub" style="margin-top:14px"><strong>[FLAGGED]</strong> means the file contains something that should not be shared as is: an email, an IP address, a home path, or one of your own private terms.</p>
+
+    <div class="rows" role="table" aria-label="gather.sh options">
+      <div class="row head" role="row"><div role="columnheader">Option</div><div role="columnheader">What it does</div><div role="columnheader">Default</div></div>
+      <div class="row" role="row"><b role="cell"><code>--dry-run</code></b><span role="cell">Print the plan and the flagged files; copy nothing</span><span role="cell">off</span></div>
+      <div class="row" role="row"><b role="cell"><code>--mode</code></b><span role="cell"><code>private</code> copies everything it finds. <code>public</code> keeps only clean skills and lists the rest in <code>REVIEW.md</code></span><span role="cell">asks you</span></div>
+      <div class="row" role="row"><b role="cell"><code>--code DIR</code></b><span role="cell">Folder where your repos live, searched for per-repo instruction files</span><span role="cell"><code>~/code</code></span></div>
+      <div class="row" role="row"><b role="cell"><code>--yes</code></b><span role="cell">Never prompt. Handy in scripts and scheduled jobs</span><span role="cell">off</span></div>
+    </div>
+    <p class="sub" style="margin-top:14px">It detects Claude Code, Codex CLI, Gemini CLI, Cursor, GitHub Copilot, Windsurf, Aider, Kiro, opencode, Amp and a shared <code>~/.agents</code> skills folder, plus per-repo files such as <code>AGENTS.md</code>, <code>.cursor/rules</code> and Copilot instructions.</p>
+
+    <h3 class="subh">Option 3 · Copy by hand</h3>
     <div class="rows" role="table" aria-label="What to collect, where it lives, and whether to share it">
       <div class="row head" role="row"><div role="columnheader">Asset</div><div role="columnheader">Where it lives</div><div role="columnheader">Share publicly?</div></div>
       <div class="row" role="row"><b role="cell">Skills</b><span role="cell"><code>~/.claude/skills/*</code></span><span role="cell">Only ones you wrote and reviewed</span></div>
@@ -214,16 +290,24 @@ footer a{color:var(--ice)}
       <div class="row" role="row"><b role="cell">Repo instructions</b><span role="cell"><code>CLAUDE.md</code>, <code>AGENTS.md</code>, <code>GEMINI.md</code></span><span role="cell">Only for repos you own</span></div>
       <div class="row" role="row"><b role="cell">Dotfiles</b><span role="cell">shell, git, editor config</span><span role="cell">No: emails, keys, paths</span></div>
     </div>
-    <div class="never"><b>Never collect:</b> credentials and tokens, SSH and cloud-CLI config folders, <code>.env</code> files, conversation transcripts and caches. Sign in again on the new machine.</div>
-    <h3 style="margin:34px 0 14px;font-size:20px">The loop</h3>
-    <div class="steps">
-      <div class="step"><div><h3>Preview &amp; gather</h3><p>Run <code>scripts/gather.sh --dry-run</code> first to preview every file and flag emails, IPs and home paths. Then run it for real: pick <em>private</em> to copy everything, or <em>public</em> to keep only clean skills.</p></div></div>
-      <div class="step"><div><h3>Trim</h3><p>Read the diff. Delete memory about organizations, clients and other people. Keep working-style notes and lessons learned.</p></div></div>
-      <div class="step"><div><h3>Check</h3><p><code>scripts/check-denylist.sh</code> and <code>gitleaks detect</code> must pass. Put private terms in the <code>EXTRA_DENYLIST</code> secret.</p></div></div>
-      <div class="step"><div><h3>Flatten</h3><p><code>python3 scripts/build-portable-context.py</code> produces the single file other agents can read.</p></div></div>
-      <div class="step"><div><h3>Commit privately</h3><p>Push to a private repo and gather again whenever your memory has grown. To publish a template, feed a separate public repo from an explicit allowlist, never the reverse.</p></div></div>
+    <div class="never"><b>Never collect:</b> credentials and tokens, SSH and cloud-CLI config folders, <code>.env</code> files, conversation transcripts, chat databases and caches. Sign in again on the new machine.</div>
+
+    <h3 class="subh">After you gather</h3>
+    <div class="grid">
+      <div class="card"><h3><code>manifest.tsv</code></h3><p>A list of every collected file with its hash. The next gather prints what is new (<code>+</code>), changed (<code>~</code>) or gone (<code>-</code>), so updating takes seconds.</p></div>
+      <div class="card"><h3><code>REVIEW.md</code></h3><p>In public mode, anything skipped because it was flagged lands here. Clean the source, then gather again.</p></div>
+      <div class="card"><h3>Trim, check, flatten</h3><p>Read the diff and drop memory about organizations, clients and other people. Run <code>scripts/check-denylist.sh</code> and <code>gitleaks detect</code>. Then <code>python3 scripts/build-portable-context.py</code> makes the single file other agents read.</p></div>
+      <div class="card"><h3>Commit privately</h3><p>Push to a private repo and gather again whenever your memory has grown. To share a template, feed a separate public repo from an explicit allowlist, never the reverse.</p></div>
     </div>
-    <p class="sub" style="margin-top:20px">Or let an agent do it: the <code>second-brain-gather</code> skill walks through this loop and flags anything risky.</p>
+
+    <h3 class="subh">Questions</h3>
+    <div class="faq">
+      <details><summary>It flagged a file. What now?</summary><p>Open it and look at the match. If it is real private data, remove it at the source and gather again. In a private backup you can keep flagged files. In a public copy they are skipped on purpose. To catch your own sensitive words too, add them to the <code>EXTRA_DENYLIST</code> secret, one regex per line.</p></details>
+      <details><summary>It found nothing for my tool.</summary><p>Some tools keep their settings in an app database rather than files, so there is nothing to copy. Copy those rules by hand into <code>agents/&lt;tool&gt;/</code>. If your repos are not in <code>~/code</code>, pass <code>--code</code>.</p></details>
+      <details><summary>Does it work on Windows?</summary><p>Run it inside WSL or Git Bash. The script needs a bash shell.</p></details>
+      <details><summary>Is it safe to pipe a download into bash?</summary><p>Only if you trust the source. Read <code>install.sh</code> first, or use the zip download. Nothing runs until you start <code>gather.sh</code>, and a dry run changes nothing.</p></details>
+      <details><summary>Where should I keep the result?</summary><p>In a private repo. A public repo should only ever hold what you chose to share, built from an allowlist.</p></details>
+    </div>
   </section>
 
   <section class="wrap reveal" aria-labelledby="h-4">
@@ -267,9 +351,9 @@ footer a{color:var(--ice)}
     <p class="sub">Copy the template into a private repo of your own, then make it yours.</p>
     <div class="term">
       <div class="bar"><i></i><i></i><i></i><button id="copy" type="button" aria-label="Copy commands">Copy</button><span class="sr" id="copied" role="status" aria-live="polite"></span></div>
-<pre id="cmds" tabindex="0" aria-label="Setup commands"><span class="c"># 1. copy the template into your own private repo</span>
-<span class="p">$</span> git clone https://github.com/mariotristan/tristan-second-brain-public my-second-brain
-<span class="p">$</span> cd my-second-brain
+<pre id="cmds" tabindex="0" aria-label="Setup commands"><span class="c"># 1. download the template (no git or GitHub login needed)</span>
+<span class="p">$</span> curl -fsSL https://github.com/mariotristan/tristan-second-brain-public/raw/main/install.sh | bash
+<span class="p">$</span> cd second-brain
 
 <span class="c"># 2. preview, then gather your skills, memory and settings</span>
 <span class="p">$</span> scripts/gather.sh --dry-run

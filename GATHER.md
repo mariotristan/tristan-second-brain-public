@@ -30,3 +30,31 @@ Credentials and tokens, SSH and cloud-CLI config folders, `.env` files, conversa
 Use two repos if you also want to publish a template: a private one with everything, and a public one fed from an explicit allowlist, never the reverse.
 
 The `second-brain-gather` skill walks an agent through this loop for you.
+
+## Three ways to gather
+
+1. **Ask your agent (recommended).** Copy `claude/skills/second-brain-gather` into `~/.claude/skills/` (other agents: copy its `SKILL.md` into their skills or rules folder), then say: "Back up my agent setup into my second-brain repo. It's a private backup." The skill asks private or public, shows a dry run, reads what it collected, runs the checks and commits.
+2. **Run the script.** `curl -fsSL https://github.com/mariotristan/tristan-second-brain-public/raw/main/install.sh | bash`, then `scripts/gather.sh --dry-run`, then `scripts/gather.sh`. Read `install.sh` first if you prefer; it is about twenty lines.
+3. **Copy by hand.** Use the table at the top of this page.
+
+## Options
+
+| Option | What it does | Default |
+|---|---|---|
+| `--dry-run` | Print the plan and flagged files; copy nothing | off |
+| `--mode private\|public` | `private` copies everything found; `public` keeps only clean skills and lists the rest in `REVIEW.md` | asks |
+| `--code DIR` | Folder searched for per-repo instruction files | `~/code` |
+| `--yes` | Never prompt | off |
+
+## Files it writes
+
+- `manifest.tsv`: every collected file with its hash. The next gather prints what is new (`+`), changed (`~`) or gone (`-`).
+- `REVIEW.md`: in public mode, items skipped because they were flagged.
+
+## Questions
+
+- **It flagged a file.** Remove the private data at the source and gather again. In a private backup you may keep flagged files; in a public copy they are skipped. Add your own sensitive words to the `EXTRA_DENYLIST` secret.
+- **It found nothing for my tool.** Some tools keep settings in an app database. Copy those rules by hand into `agents/<tool>/`. If your repos are not in `~/code`, pass `--code`.
+- **Windows.** Use WSL or Git Bash.
+- **Where do I keep the result?** In a private repo.
+- **Tests.** `scripts/test-gather.sh` checks the script against a fake home folder and runs in CI.

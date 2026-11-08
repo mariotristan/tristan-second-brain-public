@@ -4,7 +4,7 @@
 set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
 patterns=$( { grep -vE '^(#|$)' scripts/denylist.txt; printf '%s\n' "${EXTRA_DENYLIST:-}"; } | grep -v '^$')
-if git ls-files -z | grep -zvE '^(scripts/denylist\.txt|scripts/check-denylist\.sh)$' \
+if git ls-files -z | grep -zvE '^(scripts/denylist\.txt|scripts/check-denylist\.sh|scripts/test-gather\.sh)$' \
    | xargs -0 grep -niE -I -f <(printf '%s\n' "$patterns"); then
   echo "denylist match found" >&2
   exit 1

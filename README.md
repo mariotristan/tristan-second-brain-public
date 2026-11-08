@@ -15,6 +15,7 @@ RAG retrieves passages from a large document set to answer a question. A second 
 | Path | Purpose |
 |---|---|
 | `GATHER.md` | How to collect your setup in the first place, and what never to collect |
+| `install.sh` | One-line download of the template, no git or GitHub login needed |
 | `scripts/gather.sh` | Detects your agents and copies their skills, memory, settings and repo instructions (`--dry-run`, `--mode private|public`) |
 | `RESTORE-OTHER-AGENTS.md` | Where each agent (Codex, Gemini CLI, Cursor, ...) reads global and per-repo instructions |
 | `scripts/build-portable-context.py` | Flattens a `claude/memory/` folder into one agent-agnostic markdown file |
@@ -25,7 +26,7 @@ RAG retrieves passages from a large document set to answer a question. A second 
 
 ## Use it
 
-1. Fork or copy this repo into a **private** repo of your own.
+1. Download it with `curl -fsSL https://github.com/mariotristan/tristan-second-brain-public/raw/main/install.sh | bash`, or fork it, into a **private** repo of your own.
 2. Run `scripts/gather.sh --dry-run`, then `scripts/gather.sh` to copy your own skills, memory and settings into `claude/` (see `GATHER.md`).
 3. Run `python3 scripts/build-portable-context.py` to produce a portable context file.
 4. Follow `RESTORE-OTHER-AGENTS.md` for the agent you want to restore into.
